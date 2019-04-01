@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/mirooon/fingero/api/finger"
 	"gocv.io/x/gocv"
 	"image"
 	"image/png"
@@ -13,26 +15,23 @@ import (
 	"os"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024 * 16,
-	WriteBufferSize: 1024,
+var (
+	upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024 * 16,
+		WriteBufferSize: 1024,
 
-	CheckOrigin: func(r *http.Request) bool { return true },
-}
-
-var window *gocv.Window
-
-var imgPrefix = []byte("data:image/png;base64,")
-
-const deviceID = "0"
+		CheckOrigin: func(r *http.Request) bool { return true },
+	}
+	imgPrefix = []byte("data:image/png;base64,")
+)
 
 func reader(conn *websocket.Conn) {
 	writer, err := gocv.VideoWriterFile(
 		"a.avi",
 		"MJPG",
 		10,
-		640,
-		360,
+		960,
+		540,
 		true,
 	)
 	if err != nil {
@@ -52,29 +51,30 @@ func reader(conn *websocket.Conn) {
 		_, err = base64.StdEncoding.Decode(unbased, p)
 		if err != nil {
 			log.Println("Cannot decode b64")
+			return
 		}
 
 		img, err := png.Decode(bytes.NewReader(unbased))
 		if err != nil {
 			log.Println(err)
-			return
+			continue
 		}
 
 		imgMat, err := toRGB8(img)
 		if err != nil {
 			log.Println(err)
-			return
+			continue
 		}
-		err = writer.Write(imgMat)
-		if err != nil {
-			log.Println(err)
-			return
-		}
+		point := finger.Detect(imgMat)
 
-		err = conn.WriteMessage(messageType, []byte("Received frame"))
+		writer.Write(imgMat)
+
+		// ignore error here because marshalling point can not fail
+		body, _ := json.Marshal(point)
+		err = conn.WriteMessage(messageType, body)
 		if err != nil {
 			log.Println(err)
-			return
+			continue
 		}
 	}
 }
