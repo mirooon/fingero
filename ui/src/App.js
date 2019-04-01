@@ -4,13 +4,15 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBriefcase } from '@fortawesome/free-solid-svg-icons'
 import Webcam from "react-webcam";
-import { connect, sendMsg } from "./ws";
-library.add(faBriefcase)
+import { connect, sendMsg, closeSocket } from "./ws";
+import Button from '@material-ui/core/Button';
+
 
 class App extends Component {
   constructor(props) {
     super(props);
     connect();
+    library.add(faBriefcase)
   }
 
   stream = () => {
@@ -24,15 +26,15 @@ class App extends Component {
       <div className="App">
         <FontAwesomeIcon icon="briefcase" />
         <p>Work in progress</p>
+        <Button variant="contained" color="primary" onClick={closeSocket}>
+          Stop video
+        </Button>
         <Webcam
           onUserMedia={this.stream}
           ref={webcam => this.webcam = webcam}
           screenshotFormat="image/png"
-          videoConstraints={{
-            width: 1280,
-            height: 720,
-            facingMode: "user"
-          }}
+          width={960}
+          height={540}
         />
       </div>
     );
