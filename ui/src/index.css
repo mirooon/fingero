@@ -4,9 +4,9 @@ body {
     font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-image: url("./img/fingerotlo.jpg");
+    /* background-image: url("./img/fingerotlo.jpg");
     background-repeat: no-repeat;
-    background-size: 100% 1700px;
+    background-size: 100% 1700px; */
 }
 
 code {

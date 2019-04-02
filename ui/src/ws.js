@@ -8,10 +8,6 @@ let connect = () => {
         console.log("Successfully Connected");
     };
 
-    socket.onmessage = msg => {
-        console.log(msg);
-    };
-
     socket.onclose = event => {
         console.log("Socket Closed Connection: ", event);
         isClosed = true;
@@ -37,4 +33,4 @@ let closeSocket = () => {
     isClosed = true;
 };
 
-export { connect, sendMsg, closeSocket };
+export { socket, connect, sendMsg, closeSocket };
