@@ -4,10 +4,6 @@ let isClosed = false;
 let connect = () => {
     console.log("Attempting Connection...");
 
-    socket.onopen = () => {
-        console.log("Successfully Connected");
-    };
-
     socket.onclose = event => {
         console.log("Socket Closed Connection: ", event);
         isClosed = true;

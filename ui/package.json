@@ -11,8 +11,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "react-webcam": "^1.1.1",
-    "socket.io-client": "^2.2.0"
+    "react-webcam": "^1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
