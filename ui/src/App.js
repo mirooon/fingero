@@ -1,36 +1,53 @@
 import React, { Component } from 'react';
 import './App.css';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBriefcase } from '@fortawesome/free-solid-svg-icons'
 import Webcam from "react-webcam";
-import { connect, sendMsg, closeSocket } from "./ws";
+import { socket, connect, sendMsg, closeSocket } from "./ws";
 import Button from '@material-ui/core/Button';
+import Canvas from './Canvas'
 
 
 class App extends Component {
   constructor(props) {
     super(props);
     connect();
-    library.add(faBriefcase)
+    this.state = {
+      intervalID: null,
+    };
+    socket.onmessage = msg => {
+      console.log(msg);
+    };
   }
 
-  stream = () => {
-    setInterval(() => {
+
+
+  startVideo = () => {
+    console.log('starting');
+    let intervalID = setInterval(() => {
       sendMsg(this.webcam.getScreenshot());
     }, 1000 / 10);
+    this.setState({
+      intervalID: intervalID,
+    });
+  };
+
+  stopVideo = () => {
+    console.log('stopping');
+    closeSocket();
+    if (this.state.intervalID) {
+      clearInterval(this.state.intervalID);
+    }
   };
 
   render() {
     return (
       <div className="App">
-        <FontAwesomeIcon icon="briefcase" />
-        <p>Work in progress</p>
-        <Button variant="contained" color="primary" onClick={closeSocket}>
-          Stop video
-        </Button>
+        <br /><br />
+        <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
+        <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
+        <br /><br /><br />
+        <Canvas />
+        <br />
         <Webcam
-          onUserMedia={this.stream}
           ref={webcam => this.webcam = webcam}
           screenshotFormat="image/png"
           width={960}
