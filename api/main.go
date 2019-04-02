@@ -26,20 +26,6 @@ var (
 )
 
 func reader(conn *websocket.Conn) {
-	writer, err := gocv.VideoWriterFile(
-		"a.avi",
-		"MJPG",
-		10,
-		960,
-		540,
-		true,
-	)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	defer writer.Close()
-
 	for {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
@@ -66,8 +52,6 @@ func reader(conn *websocket.Conn) {
 			continue
 		}
 		point := finger.Detect(imgMat)
-
-		writer.Write(imgMat)
 
 		// ignore error here because marshalling point can not fail
 		body, _ := json.Marshal(point)
