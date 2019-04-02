@@ -5,28 +5,40 @@ import { socket, connect, sendMsg, closeSocket } from "./ws";
 import Button from '@material-ui/core/Button';
 import Canvas from './Canvas'
 
-
 class App extends Component {
   constructor(props) {
     super(props);
     connect();
     this.state = {
       intervalID: null,
+      width: 640,
+      height: 360,
+      point: { x: 0, y: 0, prevX: 0, prevY: 0 },
+    };
+
+    socket.onopen = () => {
+      console.log("Successfully Connected");
     };
     socket.onmessage = msg => {
-      console.log(msg);
+      let data = JSON.parse(msg.data);
+      this.setState({
+        point: {
+          prevX: this.state.point.x,
+          prevY: this.state.point.y,
+          x: data.X,
+          y: data.Y,
+        }
+      });
     };
   }
 
-
-
   startVideo = () => {
     console.log('starting');
-    let intervalID = setInterval(() => {
+    let id = setInterval(() => {
       sendMsg(this.webcam.getScreenshot());
     }, 1000 / 10);
     this.setState({
-      intervalID: intervalID,
+      intervalID: id,
     });
   };
 
@@ -45,13 +57,13 @@ class App extends Component {
         <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
         <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
         <br /><br /><br />
-        <Canvas />
+        <Canvas width={this.state.width} height={this.state.height} point={this.state.point} />
         <br />
         <Webcam
           ref={webcam => this.webcam = webcam}
           screenshotFormat="image/png"
-          width={960}
-          height={540}
+          width={this.state.width}
+          height={this.state.height}
         />
       </div>
     );
