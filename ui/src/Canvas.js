@@ -17,20 +17,28 @@ class Canvas extends Component {
     //     const img = this.refs.image
     // }
 
-    updateCanvas = (point) => {
+    updateCanvas = (point, mode, thickness) => {
         const ctx = this.refs.canvas.getContext('2d');
+        console.log("Mode: " + mode)
+        if (mode === "pen") {
+            ctx.globalCompositeOperation = "source-over";
+            ctx.beginPath();
+            ctx.moveTo(point.prevX, point.prevY);
+            ctx.lineTo(point.x, point.y);
+            ctx.stroke();
+        } else if (mode === "eraser") {
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.arc(point.x, point.y, thickness, 0, Math.PI * 2, false);
+            ctx.fill();
+        }
 
-        ctx.beginPath();
-        ctx.moveTo(point.prevX, point.prevY);
-        ctx.lineTo(point.x, point.y);
-        ctx.stroke();
 
     }
 
     componentDidUpdate(props) {
         if (props.point) {
             console.log('got', props.point)
-            this.updateCanvas(props.point);
+            this.updateCanvas(props.point, props.mode, props.thickness);
         }
     }
 
