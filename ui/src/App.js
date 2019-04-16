@@ -14,6 +14,8 @@ class App extends Component {
       width: 640,
       height: 360,
       point: { x: 0, y: 0, prevX: 0, prevY: 0 },
+      mode: "pen",
+      thickness: 8
     };
 
     socket.onopen = () => {
@@ -42,6 +44,27 @@ class App extends Component {
     });
   };
 
+  setEraser = () => {
+    console.log("Set eraser")
+    this.state.mode = "eraser";
+  }
+
+  setPen = () => {
+    console.log("Set pen")
+    this.state.mode = "pen";
+  }
+
+  thicknessUp = () => {
+    console.log("Current thickness: " + this.state.thickness)
+    this.state.thickness++;
+  }
+
+  thicknessDown = () => {
+    console.log("Current thickness: " + this.state.thickness)
+    this.state.thickness--;
+  }
+
+
   stopVideo = () => {
     console.log('stopping');
     closeSocket();
@@ -53,21 +76,51 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <br /><br />
-        <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
-        <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
-        <br /><br /><br />
-        <Canvas width={this.state.width} height={this.state.height} point={this.state.point} />
-        <br />
-        <Webcam
-          ref={webcam => this.webcam = webcam}
-          screenshotFormat="image/png"
-          width={this.state.width}
-          height={this.state.height}
-        />
-      </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-2">
+              <br /><br />
+              <h3>Tools</h3>
+              <br></br>
+              <Button variant="contained" color="primary" onClick={this.setEraser}>Eraser</Button>
+              <Button variant="contained" color="primary" onClick={this.setPen}>Pen</Button>
+              {this.state.mode == "eraser"
+                ? <div>
+                  <br /> <br /> <br />
+                  <strong>Thickness</strong>
+                  <br /> <br />
+                  <Button variant="contained" color="primary" onClick={this.thicknessUp}>+</Button>
+                  <Button variant="contained" color="primary" onClick={this.thicknessDown}>-</Button>
+                </div> : null
+              }
+            </div>
+            <div class="col-md-8">
+              <br /><br />
+              <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
+              <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
+              <br /> <br /> <br />
+              <Canvas width={this.state.width}
+                height={this.state.height}
+                point={this.state.point}
+                mode={this.state.mode}
+                thickness={this.state.thickness} />
+              <br />
+              <Webcam
+                ref={webcam => this.webcam = webcam}
+                screenshotFormat="image/png"
+                width={this.state.width}
+                height={this.state.height}
+              />
+            </div>
+            <div class="col-md-2">
+              <br /><br />
+              <h3>Colors(todo)</h3>
+              <br></br>
+            </div>
+          </div>
+        </div>
+      </div >
     );
   }
 }
-
 export default App;
