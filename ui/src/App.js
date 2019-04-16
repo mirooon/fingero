@@ -4,6 +4,7 @@ import Webcam from "react-webcam";
 import { socket, connect, sendMsg, closeSocket } from "./ws";
 import Button from '@material-ui/core/Button';
 import Canvas from './Canvas'
+import { CirclePicker } from 'react-color';
 
 class App extends Component {
   constructor(props) {
@@ -65,9 +66,9 @@ class App extends Component {
     this.state.thickness--;
   }
 
-  changeColor = (color) => {
-    console.log("Color changed" + color);
-    this.state.color = color;
+  changeColor = (color, event) => {
+    console.log("Color changed" + color.hex);
+    this.state.color = color.hex;
   }
 
   stopVideo = () => {
@@ -120,12 +121,9 @@ class App extends Component {
             </div>
             <div class="col-md-2">
               <br /><br />
-              <h3>Colors(todo)</h3>
+              <h3>Colors</h3>
               <br></br>
-              <Button variant="contained" color="primary" onClick={() => this.changeColor("black")}>Black</Button>
-              <Button variant="contained" color="primary" onClick={() => this.changeColor("red")}>Red</Button>
-              <Button variant="contained" color="primary" onClick={() => this.changeColor("green")}>Green</Button>
-              <Button variant="contained" color="primary" onClick={() => this.changeColor("blue")}>blue</Button>
+              <CirclePicker onChange={ this.changeColor } />
             </div>
           </div>
         </div>
