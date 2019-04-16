@@ -15,7 +15,8 @@ class App extends Component {
       height: 360,
       point: { x: 0, y: 0, prevX: 0, prevY: 0 },
       mode: "pen",
-      thickness: 8
+      thickness: 8,
+      color: "black"
     };
 
     socket.onopen = () => {
@@ -64,6 +65,10 @@ class App extends Component {
     this.state.thickness--;
   }
 
+  changeColor = (color) => {
+    console.log("Color changed" + color);
+    this.state.color = color;
+  }
 
   stopVideo = () => {
     console.log('stopping');
@@ -103,7 +108,8 @@ class App extends Component {
                 height={this.state.height}
                 point={this.state.point}
                 mode={this.state.mode}
-                thickness={this.state.thickness} />
+                thickness={this.state.thickness}
+                color={this.state.color} />
               <br />
               <Webcam
                 ref={webcam => this.webcam = webcam}
@@ -116,6 +122,10 @@ class App extends Component {
               <br /><br />
               <h3>Colors(todo)</h3>
               <br></br>
+              <Button variant="contained" color="primary" onClick={() => this.changeColor("black")}>Black</Button>
+              <Button variant="contained" color="primary" onClick={() => this.changeColor("red")}>Red</Button>
+              <Button variant="contained" color="primary" onClick={() => this.changeColor("green")}>Green</Button>
+              <Button variant="contained" color="primary" onClick={() => this.changeColor("blue")}>blue</Button>
             </div>
           </div>
         </div>
