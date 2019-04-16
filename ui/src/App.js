@@ -5,6 +5,7 @@ import { socket, connect, sendMsg, closeSocket } from "./ws";
 import Button from '@material-ui/core/Button';
 import Canvas from './Canvas'
 import { CirclePicker } from 'react-color';
+import Save from './Save';
 
 class App extends Component {
   constructor(props) {
@@ -71,6 +72,13 @@ class App extends Component {
     this.state.color = color.hex;
   }
 
+  // download = () => {
+  //   var download = document.getElementById("download");
+  //   var image = document.getElementById("myCanvas");
+  //   console.log(image);
+  //   // download.setAttribute("href", image);
+  // }
+
   stopVideo = () => {
     console.log('stopping');
     closeSocket();
@@ -104,8 +112,10 @@ class App extends Component {
               <br /><br />
               <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
               <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
+              <Save />
               <br /> <br /> <br />
-              <Canvas width={this.state.width}
+              <Canvas 
+                width={this.state.width}
                 height={this.state.height}
                 point={this.state.point}
                 mode={this.state.mode}
