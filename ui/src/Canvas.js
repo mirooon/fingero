@@ -4,6 +4,7 @@ class Canvas extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: props.id,
             width: props.width,
             height: props.height,
             prevX: 0,
@@ -32,8 +33,6 @@ class Canvas extends Component {
             ctx.arc(point.x, point.y, thickness, 0, Math.PI * 2, false);
             ctx.fill();
         }
-
-
     }
 
     componentDidUpdate(props) {
@@ -45,7 +44,7 @@ class Canvas extends Component {
 
     render() {
         return (
-            <canvas ref="canvas" width={this.state.width} height={this.state.height} style={{ border: "1px solid #000000" }} />
+            <canvas id="myCanvas" ref="canvas" width={this.state.width} height={this.state.height} style={{ border: "1px solid #000000" }} />
         );
     }
 }

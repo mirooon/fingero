@@ -4,6 +4,8 @@ import Webcam from "react-webcam";
 import { socket, connect, sendMsg, closeSocket } from "./ws";
 import Button from '@material-ui/core/Button';
 import Canvas from './Canvas'
+import { CirclePicker } from 'react-color';
+import Save from './Save';
 
 class App extends Component {
   constructor(props) {
@@ -65,10 +67,17 @@ class App extends Component {
     this.state.thickness--;
   }
 
-  changeColor = (color) => {
-    console.log("Color changed" + color);
-    this.state.color = color;
+  changeColor = (color, event) => {
+    console.log("Color changed" + color.hex);
+    this.state.color = color.hex;
   }
+
+  // download = () => {
+  //   var download = document.getElementById("download");
+  //   var image = document.getElementById("myCanvas");
+  //   console.log(image);
+  //   // download.setAttribute("href", image);
+  // }
 
   stopVideo = () => {
     console.log('stopping');
@@ -103,8 +112,10 @@ class App extends Component {
               <br /><br />
               <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
               <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
+              <Save />
               <br /> <br /> <br />
-              <Canvas width={this.state.width}
+              <Canvas 
+                width={this.state.width}
                 height={this.state.height}
                 point={this.state.point}
                 mode={this.state.mode}
@@ -120,12 +131,9 @@ class App extends Component {
             </div>
             <div class="col-md-2">
               <br /><br />
-              <h3>Colors(todo)</h3>
+              <h3>Colors</h3>
               <br></br>
-              <Button variant="contained" color="primary" onClick={() => this.changeColor("black")}>Black</Button>
-              <Button variant="contained" color="primary" onClick={() => this.changeColor("red")}>Red</Button>
-              <Button variant="contained" color="primary" onClick={() => this.changeColor("green")}>Green</Button>
-              <Button variant="contained" color="primary" onClick={() => this.changeColor("blue")}>blue</Button>
+              <CirclePicker onChange={ this.changeColor } />
             </div>
           </div>
         </div>
