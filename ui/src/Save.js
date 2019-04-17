@@ -11,9 +11,7 @@ class Save extends Component{
 
   render(){
     return(
-      <div>
        <Button variant="contained" color="primary"  onClick={ this.saveCanvas }>Save</Button>
-      </div>
     )
   }
 }
