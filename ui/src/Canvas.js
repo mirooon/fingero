@@ -21,8 +21,18 @@ class Canvas extends Component {
     updateCanvas = (point, mode, thickness, color) => {
         const ctx = this.refs.canvas.getContext('2d');
         console.log("Mode: " + mode)
+        console.log("Thickness: " + thickness)
         if (mode === "pen") {
             ctx.globalCompositeOperation = "source-over";
+            ctx.beginPath();
+            ctx.moveTo(point.prevX, point.prevY);
+            ctx.lineTo(point.x, point.y);
+            ctx.strokeStyle = color;
+            ctx.stroke();
+
+        } else if (mode === "brush") {
+            ctx.globalCompositeOperation = "source-over";
+            ctx.lineWidth = thickness;
             ctx.beginPath();
             ctx.moveTo(point.prevX, point.prevY);
             ctx.lineTo(point.x, point.y);
