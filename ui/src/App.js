@@ -17,7 +17,7 @@ class App extends Component {
       height: 360,
       point: { x: 0, y: 0, prevX: 0, prevY: 0 },
       mode: "pen",
-      thickness: 8,
+      thickness: 4,
       color: "black"
     };
 
@@ -57,6 +57,11 @@ class App extends Component {
     this.state.mode = "pen";
   }
 
+  setBrush = () => {
+    console.log("Set brush")
+    this.state.mode = "brush";
+  }
+
   thicknessUp = () => {
     console.log("Current thickness: " + this.state.thickness)
     this.state.thickness++;
@@ -64,7 +69,9 @@ class App extends Component {
 
   thicknessDown = () => {
     console.log("Current thickness: " + this.state.thickness)
-    this.state.thickness--;
+    if (this.state.thickness > 0) {
+      this.state.thickness--;
+    }
   }
 
   changeColor = (color, event) => {
@@ -97,8 +104,9 @@ class App extends Component {
               <h3>Tools</h3>
               <br></br>
               <Button variant="contained" color="primary" onClick={this.setEraser}>Eraser</Button>
-              <Button variant="contained" color="primary" onClick={this.setPen}>Pen</Button>
-              {this.state.mode == "eraser"
+              <Button variant="contained" color="primary" onClick={this.setPen}>Pencil</Button>
+              <Button variant="contained" color="primary" onClick={this.setBrush}>Brush</Button>
+              {this.state.mode == "eraser" || this.state.mode == "brush"
                 ? <div>
                   <br /> <br /> <br />
                   <strong>Thickness</strong>
@@ -114,7 +122,7 @@ class App extends Component {
               <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
               <Save />
               <br /> <br /> <br />
-              <Canvas 
+              <Canvas
                 width={this.state.width}
                 height={this.state.height}
                 point={this.state.point}
@@ -133,7 +141,7 @@ class App extends Component {
               <br /><br />
               <h3>Colors</h3>
               <br></br>
-              <CirclePicker onChange={ this.changeColor } />
+              <CirclePicker onChange={this.changeColor} />
             </div>
           </div>
         </div>
