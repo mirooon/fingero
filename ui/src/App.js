@@ -49,34 +49,46 @@ class App extends Component {
 
   setEraser = () => {
     console.log("Set eraser")
-    this.state.mode = "eraser";
+    this.setState({
+      mode: 'eraser'
+    });
   }
 
   setPen = () => {
     console.log("Set pen")
-    this.state.mode = "pen";
+    this.setState({
+      mode: 'pen'
+    });
   }
 
   setBrush = () => {
     console.log("Set brush")
-    this.state.mode = "brush";
+    this.setState({
+      mode: 'brush'
+    })
   }
 
   thicknessUp = () => {
     console.log("Current thickness: " + this.state.thickness)
-    this.state.thickness++;
+    this.setState({
+      thickness: this.state.thickness + 1
+    });
   }
 
   thicknessDown = () => {
     console.log("Current thickness: " + this.state.thickness)
     if (this.state.thickness > 0) {
-      this.state.thickness--;
+      this.setState({
+        thickness: this.state.thickness - 1
+      })
     }
   }
 
   changeColor = (color, event) => {
     console.log("Color changed" + color.hex);
-    this.state.color = color.hex;
+    this.setState({
+      color: color.hex
+    });
   }
 
   // download = () => {
@@ -97,9 +109,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-2">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-md-2">
               <br /><br />
               <h3>Tools</h3>
               <br></br>
@@ -116,7 +128,7 @@ class App extends Component {
                 </div> : null
               }
             </div>
-            <div class="col-md-8">
+            <div className="col-md-8">
               <br /><br />
               <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
               <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
@@ -137,7 +149,7 @@ class App extends Component {
                 height={this.state.height}
               />
             </div>
-            <div class="col-md-2">
+            <div className="col-md-2">
               <br /><br />
               <h3>Colors</h3>
               <br></br>
