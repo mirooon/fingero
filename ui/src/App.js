@@ -20,31 +20,28 @@ class App extends Component {
       color: "black",
       model: null,
     };
+    handTrack.load().then(model => { this.setState({ model: model }) });
   }
 
   startVideo = () => {
-    handTrack.load().then(model => {
-      this.setState({ model: model });
-
-      let id = setInterval(() => {
-        model.detect(this.webcam.getCanvas()).then(predictions => {
-          if (Array.isArray(predictions) && predictions.length) {
-            let pos = predictions[0].bbox;
-            this.setState({
-              point: {
-                prevX: this.state.point.x,
-                prevY: this.state.point.y,
-                x: pos[0],
-                y: pos[1],
-              }
-            });
-          }
-        });
-      }, 1000 / 10);
-
-      this.setState({
-        intervalID: id,
+    let id = setInterval(() => {
+      this.state.model.detect(this.webcam.getCanvas()).then(pred => {
+        if (Array.isArray(pred) && pred.length) {
+          let pos = pred[0].bbox;
+          this.setState({
+            point: {
+              prevX: this.state.point.x,
+              prevY: this.state.point.y,
+              x: pos[0],
+              y: pos[1],
+            }
+          });
+        }
       });
+    }, 1000 / 10);
+
+    this.setState({
+      intervalID: id,
     });
   };
 
