@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import './App.css';
 import Webcam from "react-webcam";
-import { socket, connect, sendMsg, closeSocket } from "./ws";
 import Button from '@material-ui/core/Button';
 import Canvas from './Canvas'
 import { CirclePicker } from 'react-color';
 import Save from './Save';
+import * as handTrack from 'handtrackjs';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    connect();
     this.state = {
       intervalID: null,
       width: 640,
@@ -18,95 +17,61 @@ class App extends Component {
       point: { x: 0, y: 0, prevX: 0, prevY: 0 },
       mode: "pen",
       thickness: 4,
-      color: "black"
-    };
-
-    socket.onopen = () => {
-      console.log("Successfully Connected");
-    };
-    socket.onmessage = msg => {
-      let data = JSON.parse(msg.data);
-      this.setState({
-        point: {
-          prevX: this.state.point.x,
-          prevY: this.state.point.y,
-          x: data.X,
-          y: data.Y,
-        }
-      });
+      color: "black",
+      model: null,
     };
   }
 
   startVideo = () => {
-    console.log('starting');
-    let id = setInterval(() => {
-      sendMsg(this.webcam.getScreenshot());
-    }, 1000 / 10);
-    this.setState({
-      intervalID: id,
+    handTrack.load().then(model => {
+      this.setState({ model: model });
+
+      let id = setInterval(() => {
+        model.detect(this.webcam.getCanvas()).then(predictions => {
+          if (Array.isArray(predictions) && predictions.length) {
+            let pos = predictions[0].bbox;
+            this.setState({
+              point: {
+                prevX: this.state.point.x,
+                prevY: this.state.point.y,
+                x: pos[0],
+                y: pos[1],
+              }
+            });
+          }
+        });
+      }, 1000 / 20);
+
+      this.setState({
+        intervalID: id,
+      });
     });
   };
 
-  setEraser = () => {
-    console.log("Set eraser")
-    this.state.mode = "eraser";
-  }
+  stopVideo = () => { this.state.intervalID && clearInterval(this.state.intervalID) };
 
-  setPen = () => {
-    console.log("Set pen")
-    this.state.mode = "pen";
-  }
+  setEraser = () => { this.setState({ mode: 'eraser' }) };
+  setPen = () => { this.setState({ mode: 'pen' }) };
+  setBrush = () => { this.setState({ mode: 'brush' }) };
 
-  setBrush = () => {
-    console.log("Set brush")
-    this.state.mode = "brush";
-  }
+  thicknessUp = () => { this.setState({ thickness: this.state.thickness + 1 }) };
+  thicknessDown = () => { this.setState({ thickness: this.state.thickness - 1 }) };
 
-  thicknessUp = () => {
-    console.log("Current thickness: " + this.state.thickness)
-    this.state.thickness++;
-  }
-
-  thicknessDown = () => {
-    console.log("Current thickness: " + this.state.thickness)
-    if (this.state.thickness > 0) {
-      this.state.thickness--;
-    }
-  }
-
-  changeColor = (color, event) => {
-    console.log("Color changed" + color.hex);
-    this.state.color = color.hex;
-  }
-
-  // download = () => {
-  //   var download = document.getElementById("download");
-  //   var image = document.getElementById("myCanvas");
-  //   console.log(image);
-  //   // download.setAttribute("href", image);
-  // }
-
-  stopVideo = () => {
-    console.log('stopping');
-    closeSocket();
-    if (this.state.intervalID) {
-      clearInterval(this.state.intervalID);
-    }
-  };
+  changeColor = (color, event) => { this.setState({ color: color.hex }) };
 
   render() {
     return (
       <div className="App">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-2">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-md-2">
               <br /><br />
               <h3>Tools</h3>
               <br></br>
               <Button variant="contained" color="primary" onClick={this.setEraser}>Eraser</Button>
               <Button variant="contained" color="primary" onClick={this.setPen}>Pencil</Button>
               <Button variant="contained" color="primary" onClick={this.setBrush}>Brush</Button>
-              {this.state.mode == "eraser" || this.state.mode == "brush"
+              {this.state.mode === "eraser" || this.state.mode === "brush"
                 ? <div>
                   <br /> <br /> <br />
                   <strong>Thickness</strong>
@@ -116,7 +81,7 @@ class App extends Component {
                 </div> : null
               }
             </div>
-            <div class="col-md-8">
+            <div className="col-md-8">
               <br /><br />
               <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
               <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
@@ -137,7 +102,7 @@ class App extends Component {
                 height={this.state.height}
               />
             </div>
-            <div class="col-md-2">
+            <div className="col-md-2">
               <br /><br />
               <h3>Colors</h3>
               <br></br>
