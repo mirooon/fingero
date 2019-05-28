@@ -118,23 +118,23 @@ class App extends Component {
                 <br /><br />
                 <h3>Tools</h3>
                 <br></br>
-                <Button variant="contained" color="primary" onClick={this.setEraser}>Eraser</Button>
-                <Button variant="contained" color="primary" onClick={this.setPen}>Pencil</Button>
-                <Button variant="contained" color="primary" onClick={this.setBrush}>Brush</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.setEraser}>Eraser</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.setPen}>Pencil</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.setBrush}>Brush</Button>
                 {this.state.mode == "eraser" || this.state.mode == "brush"
                   ? <div>
                     <br /> <br /> <br />
                     <strong>Thickness</strong>
                     <br /> <br />
-                    <Button variant="contained" color="primary" onClick={this.thicknessUp}>+</Button>
-                    <Button variant="contained" color="primary" onClick={this.thicknessDown}>-</Button>
+                    <Button variant="contained" color="primary" className="mr-3" onClick={this.thicknessUp}>+</Button>
+                    <Button variant="contained" color="primary" className="mr-3" onClick={this.thicknessDown}>-</Button>
                   </div> : null
                 }
               </div>
               <div className="col-md-8">
                 <br /><br />
-                <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
-                <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.startVideo}>Start video</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.stopVideo}>Stop video</Button>
                 <Save />
                 <br /> <br /> <br />
                 <Canvas
