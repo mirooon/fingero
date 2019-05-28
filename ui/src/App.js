@@ -40,7 +40,7 @@ class App extends Component {
             });
           }
         });
-      }, 1000 / 20);
+      }, 1000 / 10);
 
       this.setState({
         intervalID: id,
@@ -94,12 +94,12 @@ class App extends Component {
                 mode={this.state.mode}
                 thickness={this.state.thickness}
                 color={this.state.color} />
-              <br />
               <Webcam
                 ref={webcam => this.webcam = webcam}
-                screenshotFormat="image/png"
                 width={this.state.width}
                 height={this.state.height}
+                audio={false}
+                style={{ transform: 'scaleX(-1)' }}
               />
             </div>
             <div className="col-md-2">
