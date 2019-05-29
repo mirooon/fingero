@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import './App.css';
 import Webcam from "react-webcam";
-import { socket, connect, sendMsg, closeSocket } from "./ws";
 import Button from '@material-ui/core/Button';
 import Canvas from './Canvas'
 import { CirclePicker } from 'react-color';
 import Save from './Save';
+import * as handTrack from 'handtrackjs';
 import Navbar from './Navbar';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    connect();
     this.state = {
       intervalID: null,
       width: 640,
@@ -19,93 +18,51 @@ class App extends Component {
       point: { x: 0, y: 0, prevX: 0, prevY: 0 },
       mode: "pen",
       thickness: 4,
-      color: "black"
+      color: "black",
+      model: null,
     };
-
-    socket.onopen = () => {
-      console.log("Successfully Connected");
-    };
-    socket.onmessage = msg => {
-      let data = JSON.parse(msg.data);
-      this.setState({
-        point: {
-          prevX: this.state.point.x,
-          prevY: this.state.point.y,
-          x: data.X,
-          y: data.Y,
-        }
-      });
-    };
+    handTrack.load({
+      imageScaleFactor: 0.8,
+      maxNumBoxes: 10,
+      iouThreshold: 0.5,
+      scoreThreshold: 0.9,
+    }).then(model => {
+      this.setState({ model: model });
+    });
   }
 
   startVideo = () => {
-    console.log('starting');
     let id = setInterval(() => {
-      sendMsg(this.webcam.getScreenshot());
+      this.state.model.detect(this.webcam.getCanvas()).then(pred => {
+        if (Array.isArray(pred) && pred.length) {
+          let pos = pred[0].bbox;
+          this.setState({
+            point: {
+              prevX: this.state.point.x,
+              prevY: this.state.point.y,
+              x: pos[0],
+              y: pos[1],
+            }
+          });
+        }
+      });
     }, 1000 / 10);
+
     this.setState({
       intervalID: id,
     });
   };
 
-  setEraser = () => {
-    console.log("Set eraser")
-    this.setState({
-      mode: 'eraser'
-    });
-  }
+  stopVideo = () => { this.state.intervalID && clearInterval(this.state.intervalID) };
 
-  setPen = () => {
-    console.log("Set pen")
-    this.setState({
-      mode: 'pen'
-    });
-  }
+  setEraser = () => { this.setState({ mode: 'eraser' }) };
+  setPen = () => { this.setState({ mode: 'pen' }) };
+  setBrush = () => { this.setState({ mode: 'brush' }) };
 
-  setBrush = () => {
-    console.log("Set brush")
-    this.setState({
-      mode: 'brush'
-    })
-  }
+  thicknessUp = () => { this.setState({ thickness: this.state.thickness + 1 }) };
+  thicknessDown = () => { this.setState({ thickness: this.state.thickness - 1 }) };
 
-  thicknessUp = () => {
-    console.log("Current thickness: " + this.state.thickness)
-    this.setState({
-      thickness: this.state.thickness + 1
-    });
-  }
-
-  thicknessDown = () => {
-    console.log("Current thickness: " + this.state.thickness)
-    if (this.state.thickness > 0) {
-      this.setState({
-        thickness: this.state.thickness - 1
-      })
-    }
-  }
-
-  changeColor = (color, event) => {
-    console.log("Color changed" + color.hex);
-    this.setState({
-      color: color.hex
-    });
-  }
-
-  // download = () => {
-  //   var download = document.getElementById("download");
-  //   var image = document.getElementById("myCanvas");
-  //   console.log(image);
-  //   // download.setAttribute("href", image);
-  // }
-
-  stopVideo = () => {
-    console.log('stopping');
-    closeSocket();
-    if (this.state.intervalID) {
-      clearInterval(this.state.intervalID);
-    }
-  };
+  changeColor = (color, event) => { this.setState({ color: color.hex }) };
 
   render() {
     return (

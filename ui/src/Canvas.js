@@ -12,16 +12,8 @@ class Canvas extends Component {
         };
     }
 
-    // componentDidMount() {
-    //     const canvas = this.refs.canvas
-    //     const ctx = canvas.getContext("2d")
-    //     const img = this.refs.image
-    // }
-
     updateCanvas = (point, mode, thickness, color) => {
         const ctx = this.refs.canvas.getContext('2d');
-        console.log("Mode: " + mode)
-        console.log("Thickness: " + thickness)
         if (mode === "pen") {
             ctx.globalCompositeOperation = "source-over";
             ctx.beginPath();
@@ -29,7 +21,6 @@ class Canvas extends Component {
             ctx.lineTo(point.x, point.y);
             ctx.strokeStyle = color;
             ctx.stroke();
-
         } else if (mode === "brush") {
             ctx.globalCompositeOperation = "source-over";
             ctx.lineWidth = thickness;
@@ -46,15 +37,20 @@ class Canvas extends Component {
     }
 
     componentDidUpdate(props) {
-        if (props.point) {
-            console.log('got', props.point)
+        if (props.point && props.point.prevX) {
             this.updateCanvas(props.point, props.mode, props.thickness, props.color);
         }
     }
 
     render() {
         return (
-            <canvas id="myCanvas" ref="canvas" width={this.state.width} height={this.state.height} style={{ border: "1px solid #000000" }} />
+            <canvas
+                id="myCanvas"
+                ref="canvas"
+                width={this.state.width}
+                height={this.state.height}
+                style={{ border: "1px solid #000000" }}
+            />
         );
     }
 }
