@@ -23,9 +23,9 @@ class App extends Component {
     };
     handTrack.load({
       imageScaleFactor: 0.5,
-      maxNumBoxes: 10,
+      maxNumBoxes: 5,
       iouThreshold: 0.5,
-      scoreThreshold: 0.8,
+      scoreThreshold: 0.9,
     }).then(model => {
       this.setState({ model: model });
     });
@@ -71,7 +71,7 @@ class App extends Component {
           <Navbar />
           <div className="container-fluid">
             <div className="row">
-              <div className="col-md-2">
+              <div className="col-md-3">
                 <br /><br />
                 <h3>Tools</h3>
                 <br></br>
@@ -88,7 +88,7 @@ class App extends Component {
                   </div> : null
                 }
               </div>
-              <div className="col-md-8">
+              <div className="col-md-6">
                 <br /><br />
                 <Button variant="contained" color="primary" className="mr-3" onClick={this.startVideo}>Start video</Button>
                 <Button variant="contained" color="primary" className="mr-3" onClick={this.stopVideo}>Stop video</Button>
@@ -110,7 +110,7 @@ class App extends Component {
                   style={{ transform: 'scaleX(-1)' }}
                 />
               </div>
-              <div className="col-md-2">
+              <div className="col-md-3">
                 <br /><br />
                 <h3>Colors</h3>
                 <br></br>
