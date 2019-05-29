@@ -20,7 +20,14 @@ class App extends Component {
       color: "black",
       model: null,
     };
-    handTrack.load().then(model => { this.setState({ model: model }) });
+    handTrack.load({
+      imageScaleFactor: 0.8,
+      maxNumBoxes: 10,
+      iouThreshold: 0.5,
+      scoreThreshold: 0.9,
+    }).then(model => {
+      this.setState({ model: model });
+    });
   }
 
   startVideo = () => {
