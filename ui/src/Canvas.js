@@ -44,7 +44,13 @@ class Canvas extends Component {
 
     render() {
         return (
-            <canvas id="myCanvas" ref="canvas" width={this.state.width} height={this.state.height} style={{ border: "1px solid #000000" }} />
+            <canvas
+                id="myCanvas"
+                ref="canvas"
+                width={this.state.width}
+                height={this.state.height}
+                style={{ border: "1px solid #000000" }}
+            />
         );
     }
 }
