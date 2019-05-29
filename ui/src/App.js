@@ -78,7 +78,7 @@ class App extends Component {
                 <Button variant="contained" color="primary" className="mr-3" onClick={this.setEraser}>Eraser</Button>
                 <Button variant="contained" color="primary" className="mr-3" onClick={this.setPen}>Pencil</Button>
                 <Button variant="contained" color="primary" className="mr-3" onClick={this.setBrush}>Brush</Button>
-                {this.state.mode == "eraser" || this.state.mode == "brush"
+                {this.state.mode === "eraser" || this.state.mode === "brush"
                   ? <div>
                     <br /> <br /> <br />
                     <strong>Thickness</strong>
