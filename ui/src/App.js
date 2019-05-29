@@ -22,10 +22,10 @@ class App extends Component {
       model: null,
     };
     handTrack.load({
-      imageScaleFactor: 0.8,
+      imageScaleFactor: 0.5,
       maxNumBoxes: 10,
       iouThreshold: 0.5,
-      scoreThreshold: 0.9,
+      scoreThreshold: 0.8,
     }).then(model => {
       this.setState({ model: model });
     });
@@ -104,9 +104,10 @@ class App extends Component {
                 <br />
                 <Webcam
                   ref={webcam => this.webcam = webcam}
-                  screenshotFormat="image/png"
                   width={this.state.width}
                   height={this.state.height}
+                  audio={false}
+                  style={{ transform: 'scaleX(-1)' }}
                 />
               </div>
               <div className="col-md-2">
