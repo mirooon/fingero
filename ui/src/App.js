@@ -6,6 +6,7 @@ import Canvas from './Canvas'
 import { CirclePicker } from 'react-color';
 import Save from './Save';
 import * as handTrack from 'handtrackjs';
+import Navbar from './Navbar';
 
 class App extends Component {
   constructor(props) {
@@ -65,56 +66,59 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-md-2">
-              <br /><br />
-              <h3>Tools</h3>
-              <br></br>
-              <Button variant="contained" color="primary" onClick={this.setEraser}>Eraser</Button>
-              <Button variant="contained" color="primary" onClick={this.setPen}>Pencil</Button>
-              <Button variant="contained" color="primary" onClick={this.setBrush}>Brush</Button>
-              {this.state.mode === "eraser" || this.state.mode === "brush"
-                ? <div>
-                  <br /> <br /> <br />
-                  <strong>Thickness</strong>
-                  <br /> <br />
-                  <Button variant="contained" color="primary" onClick={this.thicknessUp}>+</Button>
-                  <Button variant="contained" color="primary" onClick={this.thicknessDown}>-</Button>
-                </div> : null
-              }
-            </div>
-            <div className="col-md-8">
-              <br /><br />
-              <Button variant="contained" color="primary" onClick={this.startVideo}>Start video</Button>
-              <Button variant="contained" color="primary" onClick={this.stopVideo}>Stop video</Button>
-              <Save />
-              <br /> <br /> <br />
-              <Canvas
-                width={this.state.width}
-                height={this.state.height}
-                point={this.state.point}
-                mode={this.state.mode}
-                thickness={this.state.thickness}
-                color={this.state.color} />
-              <Webcam
-                ref={webcam => this.webcam = webcam}
-                width={this.state.width}
-                height={this.state.height}
-                audio={false}
-                style={{ transform: 'scaleX(-1)' }}
-              />
-            </div>
-            <div className="col-md-2">
-              <br /><br />
-              <h3>Colors</h3>
-              <br></br>
-              <CirclePicker onChange={this.changeColor} />
+      <React.Fragment>
+        <div className="App">
+          <Navbar />
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-md-2">
+                <br /><br />
+                <h3>Tools</h3>
+                <br></br>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.setEraser}>Eraser</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.setPen}>Pencil</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.setBrush}>Brush</Button>
+                {this.state.mode == "eraser" || this.state.mode == "brush"
+                  ? <div>
+                    <br /> <br /> <br />
+                    <strong>Thickness</strong>
+                    <br /> <br />
+                    <Button variant="contained" color="primary" className="mr-3" onClick={this.thicknessUp}>+</Button>
+                    <Button variant="contained" color="primary" className="mr-3" onClick={this.thicknessDown}>-</Button>
+                  </div> : null
+                }
+              </div>
+              <div className="col-md-8">
+                <br /><br />
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.startVideo}>Start video</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.stopVideo}>Stop video</Button>
+                <Save />
+                <br /> <br /> <br />
+                <Canvas
+                  width={this.state.width}
+                  height={this.state.height}
+                  point={this.state.point}
+                  mode={this.state.mode}
+                  thickness={this.state.thickness}
+                  color={this.state.color} />
+                <br />
+                <Webcam
+                  ref={webcam => this.webcam = webcam}
+                  screenshotFormat="image/png"
+                  width={this.state.width}
+                  height={this.state.height}
+                />
+              </div>
+              <div className="col-md-2">
+                <br /><br />
+                <h3>Colors</h3>
+                <br></br>
+                <CirclePicker onChange={this.changeColor} />
+              </div>
             </div>
           </div>
-        </div>
-      </div >
+        </div >
+      </React.Fragment>
     );
   }
 }
