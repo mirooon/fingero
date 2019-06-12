@@ -14,6 +14,11 @@ class Canvas extends Component {
 
     updateCanvas = (point, mode, thickness, color) => {
         const ctx = this.refs.canvas.getContext('2d');
+        ctx.lineCap = 'round';
+        if (Math.abs(point.prevX - point.x) > 75 || Math.abs(point.prevY - point.y) > 75) {
+            point.x = point.prevX - 1;
+            point.y = point.prevY - 1;
+        }
         if (mode === "pen") {
             ctx.globalCompositeOperation = "source-over";
             ctx.beginPath();
@@ -36,7 +41,16 @@ class Canvas extends Component {
         }
     }
 
+    clearCanvas = () => {
+        const ctx = this.refs.canvas.getContext('2d');
+        ctx.clearRect(0, 0, this.state.width, this.state.height);
+    };
+
+
     componentDidUpdate(props) {
+        if (props.reset === 1) {
+            this.clearCanvas();
+        }
         if (props.point && props.point.prevX) {
             this.updateCanvas(props.point, props.mode, props.thickness, props.color);
         }

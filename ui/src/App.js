@@ -13,16 +13,20 @@ class App extends Component {
     super(props);
     this.state = {
       intervalID: null,
+      intervalSocketID: null,
       width: 640,
       height: 360,
       point: { x: 0, y: 0, prevX: 0, prevY: 0 },
-      mode: "pen",
-      thickness: 4,
+      mode: "brush",
+      thickness: 8,
       color: "black",
       model: null,
+      socket: null,
+      reset: 0,
+      pause: false,
     };
     handTrack.load({
-      imageScaleFactor: 0.5,
+      imageScaleFactor: 1,
       maxNumBoxes: 5,
       iouThreshold: 0.5,
       scoreThreshold: 0.9,
@@ -31,8 +35,29 @@ class App extends Component {
     });
   }
 
+  addSocketMethods = () => {
+    const { socket } = this.state;
+    socket.onopen = () => {
+      console.log('connected');
+    };
+
+    socket.onmessage = msg => {
+      let count = JSON.parse(msg.data).count;
+      console.log(count);
+      if (count === 0 || count === 1) {
+        this.setPen();
+      } else if (count === 2 || count === 3) {
+        this.setBrush();
+      } else {
+        this.setEraser();
+      }
+    };
+  }
+
   startVideo = () => {
+    // this.setState({ socket: new WebSocket("ws://localhost:8080/ws") }, this.addSocketMethods);
     let id = setInterval(() => {
+      if (this.state.pause) return;
       this.state.model.detect(this.webcam.getCanvas()).then(pred => {
         if (Array.isArray(pred) && pred.length) {
           let pos = pred[0].bbox;
@@ -48,16 +73,39 @@ class App extends Component {
       });
     }, 1000 / 10);
 
+    // let socketID = setInterval(() => {
+    //   const { socket } = this.state;
+    //   if (socket.readyState === WebSocket.OPEN) {
+    //     socket.send(this.webcam.getScreenshot());
+    //   }
+    // }, 1000);
+
     this.setState({
       intervalID: id,
+      // intervalSocketID: socketID,
     });
   };
 
-  stopVideo = () => { this.state.intervalID && clearInterval(this.state.intervalID) };
+  stopVideo = () => {
+    this.state.intervalID && clearInterval(this.state.intervalID);
+    this.state.intervalSocketID && clearInterval(this.state.intervalSocketID);
+    const { socket } = this.state;
+    if (socket) {
+      socket.close();
+    }
+  };
 
   setEraser = () => { this.setState({ mode: 'eraser' }) };
   setPen = () => { this.setState({ mode: 'pen' }) };
   setBrush = () => { this.setState({ mode: 'brush' }) };
+  clearCanvas = () => {
+    this.setState({ reset: 1 }, () => {
+      this.setState({ reset: 0 });
+    });
+  };
+  pauseDraw = () => {
+    this.setState({ pause: !this.state.pause });
+  };
 
   thicknessUp = () => { this.setState({ thickness: this.state.thickness + 1 }) };
   thicknessDown = () => { this.setState({ thickness: this.state.thickness - 1 }) };
@@ -92,6 +140,8 @@ class App extends Component {
                 <br /><br />
                 <Button variant="contained" color="primary" className="mr-3" onClick={this.startVideo}>Start video</Button>
                 <Button variant="contained" color="primary" className="mr-3" onClick={this.stopVideo}>Stop video</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.clearCanvas}>Clear</Button>
+                <Button variant="contained" color="primary" className="mr-3" onClick={this.pauseDraw}>Pause</Button>
                 <Save />
                 <br /> <br /> <br />
                 <Canvas
@@ -100,13 +150,16 @@ class App extends Component {
                   point={this.state.point}
                   mode={this.state.mode}
                   thickness={this.state.thickness}
-                  color={this.state.color} />
+                  color={this.state.color}
+                  reset={this.state.reset}
+                />
                 <br />
                 <Webcam
                   ref={webcam => this.webcam = webcam}
                   width={this.state.width}
                   height={this.state.height}
                   audio={false}
+                  screenshotFormat="image/png"
                   style={{ transform: 'scaleX(-1)' }}
                 />
               </div>
