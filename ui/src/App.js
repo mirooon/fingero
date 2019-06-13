@@ -82,7 +82,7 @@ class App extends Component {
 
     this.setState({
       intervalID: id,
-      // intervalSocketID: socketID,
+      intervalSocketID: socketID,
     });
   };
 
