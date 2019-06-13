@@ -55,7 +55,7 @@ class App extends Component {
   }
 
   startVideo = () => {
-    // this.setState({ socket: new WebSocket("ws://localhost:8080/ws") }, this.addSocketMethods);
+    this.setState({ socket: new WebSocket("ws://localhost:8080/ws") }, this.addSocketMethods);
     let id = setInterval(() => {
       if (this.state.pause) return;
       this.state.model.detect(this.webcam.getCanvas()).then(pred => {
@@ -73,12 +73,12 @@ class App extends Component {
       });
     }, 1000 / 10);
 
-    // let socketID = setInterval(() => {
-    //   const { socket } = this.state;
-    //   if (socket.readyState === WebSocket.OPEN) {
-    //     socket.send(this.webcam.getScreenshot());
-    //   }
-    // }, 1000);
+    let socketID = setInterval(() => {
+      const { socket } = this.state;
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(this.webcam.getScreenshot());
+      }
+    }, 1000);
 
     this.setState({
       intervalID: id,
