@@ -13,7 +13,7 @@
     "react": "^16.8.6",
     "react-color": "^2.17.0",
     "react-dom": "^16.8.6",
-    "react-scripts": "2.1.8",
+    "react-scripts": "5.0.1",
     "react-webcam": "^1.1.1"
   },
   "scripts": {
